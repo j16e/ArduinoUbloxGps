@@ -26,6 +26,30 @@ SoftwareSerial ss(3, 2);
 // Keep track of which screen we are on
 int currentScreen = 0;
 
+// Signal Icon
+byte signalIcon[8] = {
+	0b00000,
+	0b11111,
+	0b00000,
+	0b01110,
+	0b00000,
+	0b00100,
+	0b00100,
+	0b00000
+};
+
+// Direction Icon
+byte courseIcon[8] = {
+	0b00000,
+	0b00000,
+	0b00100,
+	0b01110,
+	0b01110,
+	0b11011,
+	0b10001,
+	0b00000
+};
+
 // Setup Check
 bool initiating = true;
 
@@ -33,6 +57,10 @@ void setup() {
   // initialize serial communication at 115200 bits per second:
   Serial.begin(115200);
   ss.begin(9600);
+  
+  // Custom characters for LCD
+  lcd.createChar(0, signalIcon);
+  lcd.createChar(1, courseIcon);
   
   // set up the LCD's number of columns and rows: 
   lcd.begin(16, 2);
@@ -105,6 +133,11 @@ void updateDisplay()
       break;
       
     case 5:
+      // Head Up Display
+      drawHudScreen();
+      break;
+      
+    case 6:
       // Settings
       drawSettingsScreen();
       break;
@@ -184,6 +217,42 @@ void drawDateTimeScreen() {
   lcd.print(t);
 }
 
+void drawHudScreen() {
+  // Speed
+  char spd[8] = " ";
+  if (gps.speed.isValid()) {
+    sprintf(spd, "%4d mph", (int)gps.speed.mph());
+  }
+  lcd.setCursor(8,0);
+  lcd.print(spd);
+  
+  // Direction
+  lcd.setCursor(0,1);
+  lcd.write((uint8_t)1);
+  char dir[3] = "-";
+  if (gps.course.isValid()) {
+    sprintf(dir, "%s", TinyGPSPlus::cardinal((int)gps.course.deg()));
+  }
+  lcd.print(dir);
+  
+  // Satellites
+  char s[2] = "0";
+  if (gps.satellites.isValid()) {
+    sprintf(s, "%d", gps.satellites.value());
+  }
+  lcd.setCursor(0,0);
+  lcd.write((uint8_t)0);
+  lcd.print(s);
+  
+  // Time HH:MM
+  char t[5] = "-";
+  if(gps.time.isValid()) {
+    sprintf(t, "%02d:%02d", gps.time.hour(), gps.time.minute());
+  }
+  lcd.setCursor(11,1);
+  lcd.print(t);
+}
+
 void drawSettingsScreen() {
   char b[4];
   sprintf(b, "%4d", backlightLevel);
@@ -222,10 +291,10 @@ void readButtons() {
   }
   
   // bounds checking
-  if (currentScreen > 5) {
+  if (currentScreen > 6) {
     currentScreen = 1;
   } else if (currentScreen < 0) {
-    currentScreen = 5;
+    currentScreen = 6;
   }
   
   if (backlightLevel > 255) {
@@ -278,7 +347,13 @@ void changeScreen() {
       break;
     
     case 5:
-      splash = "5. Settings";
+      splash = "5. HUD Mode";
+      line1 = "";
+      line2 = "";
+      break;
+    
+    case 6:
+      splash = "6. Settings";
       line1 = "Backlight:";
       line2 = " ";
       break;

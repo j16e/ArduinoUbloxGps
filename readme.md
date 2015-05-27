@@ -49,7 +49,14 @@ The LCD Shield used is 16 characters wide and 2 rows high, so space is limited w
 * Date - `gps.date.value()`
 * Time - `gps.time.value()`
 
-### Screen 5: Settings
+### Screen 5: Head Up Display
+
+* Top Left - Number of Satellites
+* Top Right - Speed
+* Bottom Left - Course
+* Bottom Right - Time
+
+### Screen 6: Settings
 
 * LCD Brightness
 
