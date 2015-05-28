@@ -231,7 +231,7 @@ void drawHudScreen() {
   lcd.write((uint8_t)1);
   char dir[3] = "-";
   if (gps.course.isValid()) {
-    sprintf(dir, "%s", TinyGPSPlus::cardinal((int)gps.course.deg()));
+    sprintf(dir, "%3s", TinyGPSPlus::cardinal((int)gps.course.deg()));
   }
   lcd.print(dir);
   
