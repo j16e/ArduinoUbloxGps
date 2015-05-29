@@ -174,14 +174,14 @@ void drawLocationScreen() {
 }
 
 void drawSpeedDirectionScreen() {
-  char spd[8] = " ";
+  char spd[9] = " ";
   if (gps.speed.isValid()) {
     sprintf(spd, "%4d mph", (int)gps.speed.mph());
   }
   lcd.setCursor(8,0);
   lcd.print(spd);
   
-  char dir[8] = "-";
+  char dir[9] = "-";
   if (gps.course.isValid()) {
     sprintf(dir, "%4d deg", (int)gps.course.deg());
   }
@@ -190,26 +190,26 @@ void drawSpeedDirectionScreen() {
 }
 
 void drawAccuracyScreen() {
-  char sats[4] = "-";
+  char sats[5] = "-";
   sprintf(sats, "%4d", (int)gps.satellites.value());
   lcd.setCursor(12,0);
   lcd.print(sats);
 
-  char hdop[6] = "-";
+  char hdop[7] = "-";
   sprintf(hdop, "%6d", (int)gps.hdop.value());
   lcd.setCursor(10,1);
   lcd.print(hdop);
 }
 
 void drawDateTimeScreen() {
-  char d[10] = "---------";
+  char d[11] = "----------";
   if(gps.date.isValid()) {
     sprintf(d, "%04d-%02d-%02d", gps.date.year(), gps.date.month(), gps.date.day());
   }
   lcd.setCursor(6,0);
   lcd.print(d);
   
-  char t[10] = "---------";
+  char t[11] = "--1-------";
   if(gps.time.isValid()) {
     sprintf(t, "%02d:%02d:%02d", gps.time.hour(), gps.time.minute(), gps.time.second());
   }
@@ -219,7 +219,7 @@ void drawDateTimeScreen() {
 
 void drawHudScreen() {
   // Speed
-  char spd[8] = " ";
+  char spd[9] = " ";
   if (gps.speed.isValid()) {
     sprintf(spd, "%4d mph", (int)gps.speed.mph());
   }
@@ -236,16 +236,16 @@ void drawHudScreen() {
   lcd.print(dir);
   
   // Satellites
-  char s[2] = "0";
+  char s[3] = "00";
   if (gps.satellites.isValid()) {
-    sprintf(s, "%d", gps.satellites.value());
+    sprintf(s, "%02d", gps.satellites.value());
   }
   lcd.setCursor(0,0);
   lcd.write((uint8_t)0);
   lcd.print(s);
   
   // Time HH:MM
-  char t[5] = "-";
+  char t[6] = "-";
   if(gps.time.isValid()) {
     sprintf(t, "%02d:%02d", gps.time.hour(), gps.time.minute());
   }
